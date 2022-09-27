@@ -1,6 +1,7 @@
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
+import streamlit as st
 
 nfl_names = ["arizona-cardinals",
 "atlanta-falcons",
@@ -69,7 +70,7 @@ nfl_abrv = ["ari",
 "wsh"]
 
 nfl_teams = list(zip(nfl_abrv, nfl_names))
-print(nfl_teams)
+# print(nfl_teams)
 
 # store the dataframes in an object where the key is the title of the table
 data_frames = {}
@@ -148,4 +149,7 @@ for team in nfl_teams:
       data_frames[table_title] = pd.concat([df_lookup, df])
 
 
-print(data_frames["Passing"])
+# print(data_frames["Passing"])
+for k,v in data_frames.items():
+  st.header(k)
+  st.dataframe(v)
