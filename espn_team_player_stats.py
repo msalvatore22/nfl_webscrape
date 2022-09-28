@@ -98,58 +98,49 @@ def espn_team_player_stats():
       # goal is to make a dict with player name as key and row values in a list
         # { 'Kyler Murray QB': [9,3,40...], "Backup QB": [4,5,6...]}
       # then with the column headers we can do pd.DataFrame.from_dict(d, orient='index',columns=column_headers)
-      player_table = tables[0].find_all("td", class_="Table__TD")
-      for player in player_table:
-        if 'Stats__TotalRow' not in player['class']:
-          player_list.append(player.text)
+      if table_title in ["Passing", "Rushing", "Receiving", "Scoring"]:
+        player_table = tables[0].find_all("td", class_="Table__TD")
+        for player in player_table:
+          if 'Stats__TotalRow' not in player['class']:
+            player_text = player.text
+            player_name = player_text[:-3]
+            player_position = player_text[-2:]
+            player_list.append((player_name, player_position))
 
-      # grab the stat headers that will be the columns of the data frame
-      stat_table = tables[1]
-      stat_headers = stat_table.find_all("th", class_="stats-cell")
-      for stat in stat_headers:
-        columns.append(stat.text)
 
-      # grab the rows of the table and create the player stat dictionary used for the dataframe
-      stat_table_body = stat_table.find("tbody")
-      stat_rows = stat_table_body.find_all("tr", class_="Table__TR", limit=len(player_list))
-      for i,row in enumerate(stat_rows):
-        row_values = row.find_all('td', class_="Table__TD")
-        stat_list = []
-        for value in row_values:
-          if 'Stats__TotalRow' not in value['class']:
-            if table_title == "Kicking":
-              stat_list.append(value.text)
-            else:
-              remove_commas = float(value.text.replace(',', ''))
-              stat_list.append(float(remove_commas))
-        d[player_list[i]] = stat_list 
-      # create the data frame
-      df = pd.DataFrame.from_dict(d, orient="index", columns=columns)
-      # print(df.to_string())
-      # add team column
-      df["team"] = team[0]
+        # grab the stat headers that will be the columns of the data frame
+        stat_table = tables[1]
+        stat_headers = stat_table.find_all("th", class_="stats-cell")
+        # add POS as first column in table
+        columns.append('POS')
+        for stat in stat_headers:
+          columns.append(stat.text)
+        # grab the rows of the table and create the player stat dictionary used for the dataframe
+        stat_table_body = stat_table.find("tbody")
+        stat_rows = stat_table_body.find_all("tr", class_="Table__TR", limit=len(player_list))
+        for i,row in enumerate(stat_rows):
+          row_values = row.find_all('td', class_="Table__TD")
+          stat_list = []
+          # make first stat the player position
+          stat_list.append(player_list[i][1])
+          for value in row_values:
+            remove_commas = float(value.text.replace(',', ''))
+            stat_list.append(float(remove_commas))
+          d[player_list[i][0]] = stat_list
+        # create the data frame
+        df = pd.DataFrame.from_dict(d, orient="index", columns=columns)
+        df.index.name = 'Player'
+        # print(df.to_string())
+        # add team column
+        df["TEAM"] = team[0].upper()
 
-      if table_title not in data_frames:
-        data_frames[table_title] = df
-      else:
-        df_lookup = data_frames[table_title]
-        data_frames[table_title] = pd.concat([df_lookup, df])
+        if table_title not in data_frames:
+          data_frames[table_title] = df
+        else:
+          df_lookup = data_frames[table_title]
+          data_frames[table_title] = pd.concat([df_lookup, df])
 
   return data_frames
 
-# result = espn_team_player_stats()["Passing"].head(10)
-# print(result.index)
-
-# # print(data_frames["Passing"])
-# Streamlit code
-# for k,v in data_frames.items():
-#   if k in ["Passing", "Receiving", "Rushing"]:
-#     yds_sort = v.sort_values(by=['YDS'], ascending=False)
-#     td_sort = v.sort_values(by=['TD'], ascending=False)
-#     top_yards = yds_sort.head(20)
-#     top_tds = td_sort.head(10)
-#     st.header(k)
-#     st.dataframe(yds_sort)
-#     # st.bar_chart(v.loc[:, v.columns != 'team'])
-#     st.bar_chart(top_yards[['YDS']])
-#     st.bar_chart(top_tds[['TD']])
+  # result = espn_team_player_stats()["Passing"].head(10)
+  # print(result.index)
