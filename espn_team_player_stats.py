@@ -1,9 +1,9 @@
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
-# import streamlit as st
 
-def espn_team_player_stats():
+def espn_team_player_stats(stat_category):
+  print(f"i am getting the {stat_category} data now")
   nfl_names = ["arizona-cardinals",
   "atlanta-falcons",
   "baltimore-ravens",
@@ -98,7 +98,7 @@ def espn_team_player_stats():
       # goal is to make a dict with player name as key and row values in a list
         # { 'Kyler Murray QB': [9,3,40...], "Backup QB": [4,5,6...]}
       # then with the column headers we can do pd.DataFrame.from_dict(d, orient='index',columns=column_headers)
-      if table_title in ["Passing", "Rushing", "Receiving", "Scoring"]:
+      if table_title == stat_category:
         player_table = tables[0].find_all("td", class_="Table__TD")
         for player in player_table:
           if 'Stats__TotalRow' not in player['class']:
@@ -111,10 +111,12 @@ def espn_team_player_stats():
         # grab the stat headers that will be the columns of the data frame
         stat_table = tables[1]
         stat_headers = stat_table.find_all("th", class_="stats-cell")
+        
         # add POS as first column in table
         columns.append('POS')
         for stat in stat_headers:
           columns.append(stat.text)
+
         # grab the rows of the table and create the player stat dictionary used for the dataframe
         stat_table_body = stat_table.find("tbody")
         stat_rows = stat_table_body.find_all("tr", class_="Table__TR", limit=len(player_list))
@@ -123,14 +125,19 @@ def espn_team_player_stats():
           stat_list = []
           # make first stat the player position
           stat_list.append(player_list[i][1])
+
+          # get the stat values
           for value in row_values:
             remove_commas = float(value.text.replace(',', ''))
             stat_list.append(float(remove_commas))
+          
+          # add the stats for each player
           d[player_list[i][0]] = stat_list
+        
         # create the data frame
         df = pd.DataFrame.from_dict(d, orient="index", columns=columns)
         df.index.name = 'Player'
-        # print(df.to_string())
+
         # add team column
         df["TEAM"] = team[0].upper()
 
@@ -140,7 +147,4 @@ def espn_team_player_stats():
           df_lookup = data_frames[table_title]
           data_frames[table_title] = pd.concat([df_lookup, df])
 
-  return data_frames
-
-  # result = espn_team_player_stats()["Passing"].head(10)
-  # print(result.index)
+  return data_frames[stat_category]
