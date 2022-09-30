@@ -61,16 +61,16 @@ def update_output(value):
         core_stats = core_stats + passing_stats
 
       for st in core_stats:
-          sorted = stats.sort_values(by=st, ascending=False).head(10)
+          sorted = stats.sort_values(by=st, ascending=False).head(20)
           fig = px.bar(sorted[[st]], y=st, color=st, barmode="group", template="SUPERHERO")
           fig_list.append(fig)
-
       
       output_html = html.Div(children=[
-        dbc.Container(children=[
-          dbc.Row(dcc.Graph(figure=fig)) for fig in fig_list
-        ]),
+        html.Div(children=[
+          dcc.Graph(figure=fig, style={'margin': 5}) for fig in fig_list
+        ], style={'display': 'flex', 'flexDirection': 'row', 'flexWrap': 'wrap', 'justifyContent': 'center'}),
         dbc.Row(table)
         ]
       )
+    # print(output_html)
     return output_html

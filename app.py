@@ -3,7 +3,7 @@ import dash_bootstrap_components as dbc
 import dash
 
 dbc_css = "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css"
-app = Dash(__name__, external_stylesheets=[dbc.themes.SUPERHERO, dbc_css], use_pages=True)
+app = Dash(__name__, external_stylesheets=[dbc.themes.SUPERHERO, dbc_css], use_pages=True, suppress_callback_exceptions=True)
 
 app.layout = html.Div([
 	html.Header([
