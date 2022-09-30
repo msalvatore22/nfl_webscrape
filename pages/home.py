@@ -34,35 +34,42 @@ layout = dbc.Container(children=[
     #     style={'margin': 5}
     #   )
     # ),
-    dcc.Dropdown(nfl_team_lists.nfl_abrv, nfl_team_lists.nfl_abrv[0].upper(), id='demo-dropdown'),
-    dbc.Row(children=[html.Div(id='dd-output-container')]),
-
-],
+    # dbc.Row(dcc.Dropdown([t.upper() for t in nfl_team_lists.nfl_abrv], nfl_team_lists.nfl_abrv[0].upper(), id='dropdown'), style={'marginBottom': 20}),
+    # dbc.Row(
+    #     children=[
+    #         dcc.Loading(
+    #             id='loading-1', type='default', children=[html.Div(id='output-container')]
+    #             )
+    #         ]),
+    'Home page'
+    ],
 fluid=True,
 className='dbc'
 )
 
-@callback(
-    Output('dd-output-container', 'children'),
-    Input('demo-dropdown', 'value')
-)
-def update_output(value):
-    if value:
-        stats = espn_team_player_stats(["Passing", "Receiving", "Rushing"])
-        passing_stats = stats["Passing"]
-        passing_stats_reset_index = passing_stats.reset_index(names="Player")
-        filtered_df = passing_stats_reset_index[passing_stats_reset_index['TEAM'] == value.upper()]
-        print(filtered_df)
-        table = html.Div(
-            dash_table.DataTable(
-                columns=[{"name": i, "id": i} for i in filtered_df.columns],
-                data=filtered_df.to_dict("records"),
-                row_selectable="single",
-                row_deletable=True,
-                editable=True,
-                filter_action="native",
-                sort_action="native",
-                style_table={"overflowX": "auto"},
-            )
-        )
-        return table
+
+
+# @callback(
+#     Output('output-container', 'children'),
+#     Input('dropdown', 'value')
+# )
+# def update_output(value):
+#     if value:
+#         stats = espn_team_player_stats(["Passing", "Receiving", "Rushing"])
+#         passing_stats = stats["Passing"]
+#         passing_stats_reset_index = passing_stats.reset_index(names="Player")
+#         filtered_df = passing_stats_reset_index[passing_stats_reset_index['TEAM'] == value.upper()]
+#         print(filtered_df)
+#         table = html.Div(
+#             dash_table.DataTable(
+#                 columns=[{"name": i, "id": i} for i in filtered_df.columns],
+#                 data=filtered_df.to_dict("records"),
+#                 row_selectable="single",
+#                 row_deletable=True,
+#                 editable=True,
+#                 filter_action="native",
+#                 sort_action="native",
+#                 style_table={"overflowX": "auto"},
+#             )
+#         )
+#         return table
