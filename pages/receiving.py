@@ -9,7 +9,7 @@ from espn_team_player_stats import espn_team_player_stats
 dash.register_page(__name__)
 load_figure_template("SUPERHERO")
 
-rushing_stats = espn_team_player_stats("Receiving")
+rushing_stats = espn_team_player_stats(["Receiving"])["Receiving"]
 rushing_stats_reset_index = rushing_stats.reset_index(names="Player")
 rushing_yds = rushing_stats.sort_values(by=['YDS'], ascending=False).head(20)
 rushing_tds = rushing_stats.sort_values(by=['TD'], ascending=False).head(20)

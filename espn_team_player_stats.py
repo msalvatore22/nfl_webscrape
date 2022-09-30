@@ -1,79 +1,14 @@
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
+import nfl_team_lists
 
-def espn_team_player_stats(stat_category):
-  print(f"i am getting the {stat_category} data now")
-  nfl_names = ["arizona-cardinals",
-  "atlanta-falcons",
-  "baltimore-ravens",
-  "buffalo-bills",
-  "carolina-panthers",
-  "chicago-bears",
-  "cincinnati-bengals",
-  "cleveland-browns",
-  "dallas-cowboys",
-  "denver-broncos",
-  "detroit-lions",
-  "green-bay-packers",
-  "houston-texans",
-  "indianapolis-colts",
-  "jacksonville-jaguars",
-  "kansas-city-chiefs",
-  "las-vegas-raiders",
-  "los-angeles-chargers",
-  "los-angeles-rams",
-  "miami-dolphins",
-  "minnesota-vikings",
-  "new-england-patriots",
-  "new-orleans-saints",
-  "new-york-giants",
-  "new-york-jets",
-  "philadelphia-eagles",
-  "pittsburgh-steelers",
-  "san-francisco-49ers",
-  "seattle-seahawks",
-  "tampa-bay-buccaneers",
-  "tennessee-titans",
-  "washington-commanders"]
-  nfl_abrv = ["ari",
-  "atl",
-  "bal",
-  "buf",
-  "car",
-  "chi",
-  "cin",
-  "cle",
-  "dal",
-  "den",
-  "det",
-  "gb",
-  "hou",
-  "ind",
-  "jax",
-  "kc",
-  "lv",
-  "lac",
-  "lar",
-  "mia",
-  "min",
-  "ne",
-  "no",
-  "nyg",
-  "nyj",
-  "phi",
-  "pit",
-  "sf",
-  "sea",
-  "tb",
-  "ten",
-  "wsh"]
-
-  nfl_teams = list(zip(nfl_abrv, nfl_names))
+def espn_team_player_stats(stat_categories):
+  print(f"i am getting the {' '.join(stat_categories)} data now")
   # print(nfl_teams)
   # store the dataframes in an object where the key is the title of the table
   data_frames = {}
-  for team in nfl_teams:
+  for team in nfl_team_lists.nfl_teams:
     URL = f'https://www.espn.com/nfl/team/stats/_/name/{team[0]}/{team[1]}'
     page = requests.get(URL)
     # print(page)
@@ -98,7 +33,7 @@ def espn_team_player_stats(stat_category):
       # goal is to make a dict with player name as key and row values in a list
         # { 'Kyler Murray QB': [9,3,40...], "Backup QB": [4,5,6...]}
       # then with the column headers we can do pd.DataFrame.from_dict(d, orient='index',columns=column_headers)
-      if table_title == stat_category:
+      if table_title in stat_categories:
         player_table = tables[0].find_all("td", class_="Table__TD")
         for player in player_table:
           if 'Stats__TotalRow' not in player['class']:
@@ -147,4 +82,4 @@ def espn_team_player_stats(stat_category):
           df_lookup = data_frames[table_title]
           data_frames[table_title] = pd.concat([df_lookup, df])
 
-  return data_frames[stat_category]
+  return data_frames

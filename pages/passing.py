@@ -9,7 +9,7 @@ from espn_team_player_stats import espn_team_player_stats
 dash.register_page(__name__)
 load_figure_template("SUPERHERO")
 
-passing_stats = espn_team_player_stats("Passing")
+passing_stats = espn_team_player_stats(["Passing"])["Passing"]
 qb_passing_stats = passing_stats[passing_stats['POS'] == 'QB']
 passing_stats_reset_index = qb_passing_stats.reset_index(names="Player")
 passing_yds = passing_stats.sort_values(by=['YDS'], ascending=False).head(20)
