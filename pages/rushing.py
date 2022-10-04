@@ -4,12 +4,12 @@ import dash_bootstrap_components as dbc
 from dash_bootstrap_templates import load_figure_template
 import plotly.express as px
 import pandas as pd
-from espn_team_player_stats import espn_team_player_stats
+from data import data
 
 dash.register_page(__name__)
 load_figure_template("SUPERHERO")
 
-rushing_stats = espn_team_player_stats(["Rushing"])["Rushing"]
+rushing_stats = data["Rushing"]
 rushing_stats_reset_index = rushing_stats.reset_index(names="Player")
 rushing_yds = rushing_stats.sort_values(by=['YDS'], ascending=False).head(20)
 rushing_tds = rushing_stats.sort_values(by=['TD'], ascending=False).head(20)

@@ -5,7 +5,7 @@ import dash_bootstrap_components as dbc
 from dash_bootstrap_templates import load_figure_template
 import plotly.express as px
 import pandas as pd
-from espn_team_player_stats import espn_team_player_stats
+from data import data
 
 dash.register_page(__name__)
 load_figure_template("SUPERHERO")
@@ -32,7 +32,7 @@ className='dbc'
 def update_output(value):
     if value:
 
-      stats = espn_team_player_stats([value])[value]
+      stats = data[value]
       stats_reset_index = stats.reset_index(names="Player")
 
       table = html.Div(

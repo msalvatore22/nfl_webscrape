@@ -3,8 +3,8 @@ import pandas as pd
 from bs4 import BeautifulSoup
 import nfl_team_lists
 
-def espn_team_player_stats(stat_categories):
-  print(f"i am getting the {' '.join(stat_categories)} data now")
+def espn_team_player_stats():
+  print(f"i am getting the data now")
   # print(nfl_teams)
   # store the dataframes in an object where the key is the title of the table
   data_frames = {}
@@ -33,7 +33,7 @@ def espn_team_player_stats(stat_categories):
       # goal is to make a dict with player name as key and row values in a list
         # { 'Kyler Murray QB': [9,3,40...], "Backup QB": [4,5,6...]}
       # then with the column headers we can do pd.DataFrame.from_dict(d, orient='index',columns=column_headers)
-      if table_title in stat_categories:
+      if table_title in ["Passing", "Rushing", "Receiving", "Defense"]:
         player_table = tables[0].find_all("td", class_="Table__TD")
         for player in player_table:
           if 'Stats__TotalRow' not in player['class']:

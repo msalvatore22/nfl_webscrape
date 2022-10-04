@@ -4,8 +4,8 @@ import dash_bootstrap_components as dbc
 from dash_bootstrap_templates import load_figure_template
 import plotly.express as px
 import pandas as pd
-from espn_team_player_stats import espn_team_player_stats
 import nfl_team_lists
+from data import data
 
 dash.register_page(__name__, path='/')
 load_figure_template("SUPERHERO")
@@ -31,8 +31,7 @@ className='dbc'
 )
 def update_output(value):
     if value:
-        stats = espn_team_player_stats(["Passing", "Receiving", "Rushing"])
-        passing_stats = stats["Passing"]
+        passing_stats = data["Passing"]
         passing_stats_reset_index = passing_stats.reset_index(names="Player")
         filtered_df = passing_stats_reset_index[passing_stats_reset_index['TEAM'] == value.upper()]
         table = html.Div(

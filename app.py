@@ -1,6 +1,7 @@
 from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
 import dash
+from espn_team_player_stats import espn_team_player_stats
 
 dbc_css = "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css"
 app = Dash(__name__, external_stylesheets=[dbc.themes.SUPERHERO, dbc_css], use_pages=True, suppress_callback_exceptions=True)
@@ -21,4 +22,4 @@ app.layout = html.Div([
 ])
 
 if __name__ == '__main__':
-	app.run_server(debug=True)
+  app.run_server(debug=True)
