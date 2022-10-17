@@ -31,19 +31,57 @@ className='dbc'
 )
 def update_output(value):
     if value:
-        passing_stats = data["Passing"]
-        passing_stats_reset_index = passing_stats.reset_index(names="Player")
-        filtered_df = passing_stats_reset_index[passing_stats_reset_index['TEAM'] == value.upper()]
-        table = html.Div(
+        html_output = []
+
+        rushing_stats = ['ATT', 'YDS', 'YDS/G', 'TD' ]
+        receiving_stats = ['TGTS', 'REC', 'YDS', 'YAC', 'YDS/G', 'TD' ]
+
+        receiving_df = data["Receiving"]
+        rushing_df = data["Rushing"]
+        team_rec = receiving_df[receiving_df['TEAM'] == value.upper()]
+        team_rush = rushing_df[rushing_df['TEAM'] == value.upper()]
+
+        html_output.append(html.Div(html.H1('Receiving Stats'), style={ 'marginTop': 40, 'display': 'flex', 'justifyContent': 'center'}))
+        for st in receiving_stats:
+            sorted = team_rec.sort_values(by=st, ascending=False).head(10)
+            fig = px.bar(sorted[[st]], y=st, color=st, barmode="group", template="SUPERHERO", text=sorted[st])
+
+            sorted_reindex = sorted.reset_index(names="Player")
+            table = html.Div(
             dash_table.DataTable(
-                columns=[{"name": i, "id": i} for i in filtered_df.columns],
-                data=filtered_df.to_dict("records"),
-                row_selectable="single",
-                row_deletable=True,
-                editable=True,
-                filter_action="native",
-                sort_action="native",
-                style_table={"overflowX": "auto"},
-            )
-        )
-        return table
+              columns=[{"name": i, "id": i} for i in sorted_reindex.columns],
+              data=sorted_reindex.to_dict("records"),
+              row_selectable="single",
+              row_deletable=True,
+              editable=True,
+              filter_action="native",
+              sort_action="native",
+              style_table={"overflowX": "auto"},
+              ),
+          )
+
+            html_output.append(html.Div(children=[html.H3(st, style={ 'marginTop': 20 }), dcc.Graph(figure=fig, style={'margin': 5, 'width': '100%'}), dbc.Row(table)], style={'display': 'flex', 'flexDirection': 'column', 'alignItems': 'center'}))
+        
+        html_output.append(html.Div(html.H1('Rushing Stats'), style={ 'marginTop': 40, 'display': 'flex', 'justifyContent': 'center'}))
+        for st in rushing_stats:
+            sorted = team_rush.sort_values(by=st, ascending=False).head(10)
+            fig = px.bar(sorted[[st]], y=st, color=st, barmode="group", template="SUPERHERO", text=sorted[st])
+
+            sorted_reindex = sorted.reset_index(names="Player")
+            table = html.Div(
+            dash_table.DataTable(
+              columns=[{"name": i, "id": i} for i in sorted_reindex.columns],
+              data=sorted_reindex.to_dict("records"),
+              row_selectable="single",
+              row_deletable=True,
+              editable=True,
+              filter_action="native",
+              sort_action="native",
+              style_table={"overflowX": "auto"},
+              ),
+          )
+
+            html_output.append(html.Div(children=[html.H3(st, style={ 'marginTop': 20 }), dcc.Graph(figure=fig, style={'margin': 5, 'width': '100%'}), dbc.Row(table)], style={'display': 'flex', 'flexDirection': 'column', 'alignItems': 'center'}))
+
+        output_html = html.Div(children=html_output)
+        return output_html

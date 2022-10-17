@@ -15,8 +15,8 @@ passing_stats_reset_index = qb_passing_stats.reset_index(names="Player")
 passing_yds = passing_stats.sort_values(by=['YDS'], ascending=False).head(10)
 passing_tds = passing_stats.sort_values(by=['TD'], ascending=False).head(10)
 
-fig1 = px.bar(passing_yds[['YDS']], y="YDS", color="YDS", barmode="group", template="SUPERHERO")
-fig2 = px.bar(passing_tds[['TD']], y="TD", color="TD", barmode="group", template="SUPERHERO")
+fig1 = px.bar(passing_yds[['YDS']], y="YDS", color="YDS", barmode="group", template="SUPERHERO", text=passing_yds['YDS'])
+fig2 = px.bar(passing_tds[['TD']], y="TD", color="TD", barmode="group", template="SUPERHERO", text=passing_tds['TD'])
 
 table = html.Div(
     dash_table.DataTable(

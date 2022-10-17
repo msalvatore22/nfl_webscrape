@@ -47,7 +47,7 @@ def update_output(value):
 
       for st in core_stats:
           sorted = stats.sort_values(by=st, ascending=False).head(10)
-          fig = px.bar(sorted[[st]], y=st, color=st, barmode="group", template="SUPERHERO")
+          fig = px.bar(sorted[[st]], y=st, color=st, barmode="group", template="SUPERHERO", text=sorted[st])
 
           sorted_reindex = sorted.reset_index(names="Player")
           table = html.Div(
