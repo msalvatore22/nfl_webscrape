@@ -12,8 +12,8 @@ load_figure_template("SUPERHERO")
 passing_stats = data["Passing"]
 qb_passing_stats = passing_stats[passing_stats['POS'] == 'QB']
 passing_stats_reset_index = qb_passing_stats.reset_index(names="Player")
-passing_yds = passing_stats.sort_values(by=['YDS'], ascending=False).head(20)
-passing_tds = passing_stats.sort_values(by=['TD'], ascending=False).head(20)
+passing_yds = passing_stats.sort_values(by=['YDS'], ascending=False).head(10)
+passing_tds = passing_stats.sort_values(by=['TD'], ascending=False).head(10)
 
 fig1 = px.bar(passing_yds[['YDS']], y="YDS", color="YDS", barmode="group", template="SUPERHERO")
 fig2 = px.bar(passing_tds[['TD']], y="TD", color="TD", barmode="group", template="SUPERHERO")
